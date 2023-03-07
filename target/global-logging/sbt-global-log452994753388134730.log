@@ -1,0 +1,11 @@
+[debug] > Exec(scala OrderAnalyzerApp 2022-01-01 2022-02-01, None, None)
+[error] Expected ID character
+[error] Not a valid command: scala (similar: alias, last, eval)
+[error] Expected project ID
+[error] Expected configuration
+[error] Expected ':'
+[error] Expected key
+[error] Not a valid key: scala (similar: scalaHome, scalaSource, clean)
+[error] scala OrderAnalyzerApp 2022-01-01 2022-02-01
+[error]      ^
+[debug] > Exec(idea-shell, None, None)
