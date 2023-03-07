@@ -7,4 +7,4 @@ E.G:
 
 you can alter the date interval for testing as you wish
 
-If you're running on and IDE such as IntellJ, you must find the Run/Debug Configurations windows and input the program arguments
+If you're running on an IDE such as IntellJ, you must find the Run/Debug Configurations windows and input the program arguments
