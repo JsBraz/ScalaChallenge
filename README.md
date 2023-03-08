@@ -7,7 +7,6 @@ E.G:
 
 the "0-2 2-4 4-6 6-8 8-10 10-12 >13" is the bonus requirement that lets you pass a custom list of intervals, this can be changed to whatever interval you want and can also be ommited, if you choose not to pass any it will use the default intervals:
 
-    $ scala OrderAnalyzerApp 2022-01-01 2023-02-01
 
           List(
         (0, 3),
