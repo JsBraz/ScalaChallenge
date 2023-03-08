@@ -40,7 +40,7 @@ class OrderAnalyzer(orders: List[Order]) {
       })
       // Create a label for the age interval based on the start and end values
       // If the end value is Int.MaxValue, represent it as ">start months"
-      val groupLabel = if (start == 12 && end == Int.MaxValue) {
+      val groupLabel = if ( end == Int.MaxValue) {
         s">$start months"
       } else {
         s"$start-${end} months"
@@ -75,32 +75,52 @@ object OrderAnalyzerApp {
         Item(Product("Product H", "Category 2", 3.0, 30.0, LocalDate.parse("2021-02-01", DateTimeFormatter.ISO_LOCAL_DATE)), 30.0, 4.0, 3.0),
         Item(Product("Product I", "Category 1", 2.0, 20.0, LocalDate.parse("2021-06-01", DateTimeFormatter.ISO_LOCAL_DATE)), 20.0, 3.0, 2.0)
       )),
-
       Order("Customer E", "contact5@example.com", "Rua 895, Portugal", 200.0, LocalDate.parse("2022-08-01", DateTimeFormatter.ISO_LOCAL_DATE), List(
         Item(Product("Product L", "Category 1", 2.0, 20.0, LocalDate.parse("2021-11-01", DateTimeFormatter.ISO_LOCAL_DATE)), 20.0, 3.0, 2.0),
         Item(Product("Product L", "Category 1", 2.0, 20.0, LocalDate.parse("2021-08-01", DateTimeFormatter.ISO_LOCAL_DATE)), 20.0, 3.0, 2.0)
       )),
-
       Order("Customer F", "contact6@example.com", "Rua 895, Portugal", 200.0, LocalDate.parse("2022-02-01", DateTimeFormatter.ISO_LOCAL_DATE), List(
         Item(Product("Product L", "Category 1", 2.0, 20.0, LocalDate.parse("2021-01-01", DateTimeFormatter.ISO_LOCAL_DATE)), 20.0, 3.0, 2.0)
       ))
-
     )
-    val analyzer = new OrderAnalyzer(orders)
 
+    val analyzer = new OrderAnalyzer(orders)
     // Filter orders by date range
     val startDate = LocalDate.parse(args(0), DateTimeFormatter.ISO_LOCAL_DATE)
     val endDate = LocalDate.parse(args(1), DateTimeFormatter.ISO_LOCAL_DATE)
     val filteredOrders = analyzer.filterOrdersByDateRange(startDate, endDate)
 
+    /*
+    The code checks if more than two arguments were passed in.
+    If so, it assumes that the first two arguments are start and end dates, and any additional arguments are the custom intervals specified by the user.
+    If custom intervals were provided, the code extracts them from the argument list using drop(2) to skip the start and end dates.
+    It then maps over each interval string, splitting it on the "-" character to get the start and end values as integers.
+    The resulting list of tuples is converted to a List using the toList method.
+    If no custom intervals were provided, the code uses the default intervals from the original implementation, which group orders by product age into the intervals of "0-3", "3-6", "6-9", "9-12", and ">12" months.
+     */
+
     // Group orders by product age intervals
-    val intervals = List(
-      (0, 3),
-      (3, 6),
-      (6, 9),
-      (9, 12),
-      (12, Int.MaxValue)
-    )
+    // Check if an argument was provided for the intervals
+    val intervals = if (args.length > 2) {
+      // If an argument was provided, parse the intervals from the argument list
+      args.drop(2).map(interval => {
+        //if the interval string starts with ">", it extracts the integer value after it as the start of the interval and sets the end to Int.MaxValue
+        // Otherwise, it extracts the start and end values from the interval string as before using the - separator
+        val start = if (interval.startsWith(">")) interval.drop(1).toInt else interval.split("-")(0).toInt
+        val end = if (interval.startsWith(">")) Int.MaxValue else interval.split("-")(1).toInt
+        (start, end)
+      }).toList
+    } else {
+      // If no argument was provided, use the default intervals
+      List(
+        (0, 3),
+        (3, 6),
+        (6, 9),
+        (9, 12),
+        (12, Int.MaxValue)
+      )
+    }
+    // Group orders by product age using the specified intervals
     val groupedOrders = analyzer.groupOrdersByProductAge(intervals, startDate)
 
     // Print results
@@ -111,6 +131,3 @@ object OrderAnalyzerApp {
     groupedOrders.foreach(println)
   }
 }
-
-
-
